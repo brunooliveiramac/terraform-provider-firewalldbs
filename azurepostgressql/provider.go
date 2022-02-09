@@ -67,7 +67,7 @@ func providerConfigure(ctx context.Context, resource *schema.ResourceData) (inte
 		diagnostics = append(diagnostics, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "Unable to create provider client connection",
-			Detail:   "Unable to auth user on server",
+			Detail:   err.Error(),
 		})
 		return nil, diagnostics
 	}
