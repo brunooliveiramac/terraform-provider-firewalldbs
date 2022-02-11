@@ -2,6 +2,7 @@
 vendor
 .DS_Store
 terraform-provider-hashicups
+.terraform.lock.hcl
 bin
 
 # Created by https://www.toptal.com/developers/gitignore/api/go,terraform

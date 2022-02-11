@@ -13,52 +13,22 @@ func resourceDBUser() *schema.Resource {
 		UpdateContext: resourceUserUpdate,
 		DeleteContext: resourceUserDelete,
 		Schema: map[string]*schema.Schema{
-			"items": &schema.Schema{
-				Type:     schema.TypeList,
-				Required: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"coffee": &schema.Schema{
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Required: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"id": &schema.Schema{
-										Type:     schema.TypeInt,
-										Required: true,
-									},
-									"name": &schema.Schema{
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"teaser": &schema.Schema{
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"description": &schema.Schema{
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"price": &schema.Schema{
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"image": &schema.Schema{
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-								},
-							},
-						},
-						"quantity": &schema.Schema{
-							Type:     schema.TypeInt,
-							Required: true,
-						},
-					},
-				},
+			"username": {
+				Type:        schema.TypeString,
+				Required:    true,
 			},
-
+			"password": {
+				Type:        schema.TypeString,
+				Required:    true,
+			},
+			"role": {
+				Type:        schema.TypeString,
+				Required:    true,
+			},
+			"database": {
+				Type:        schema.TypeString,
+				Required:    true,
+			},
 		},
 	}
 }
@@ -78,7 +48,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 }
 
 func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	return resourceUserRead(ctx, d, m)
+	return resourceRoleRead(ctx, d, m)
 }
 
 func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

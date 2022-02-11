@@ -24,6 +24,7 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive: 	  false,
+
 			},
 			"database": &schema.Schema{
 				Type:        schema.TypeString,
@@ -38,13 +39,18 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"azurepostgressql_user": resourceDBUser(),
+			"azurepostgressql_role": resourceDBRole(),
+
 		},
-		DataSourcesMap: map[string]*schema.Resource{},
+		DataSourcesMap: map[string]*schema.Resource{
+
+		},
 		ConfigureContextFunc: providerConfigure,
 	}
 }
 
 func providerConfigure(ctx context.Context, resource *schema.ResourceData) (interface{}, diag.Diagnostics) {
+
 	host := resource.Get("host").(string)
 	port := resource.Get("port").(int)
 	username := resource.Get("username").(string)
@@ -61,24 +67,18 @@ func providerConfigure(ctx context.Context, resource *schema.ResourceData) (inte
 		Password: password,
 	}
 
-	connection, err := dataprovider.DBClient(&credentials)
+	err := dataprovider.DBClientConnect(&credentials)
 
 	if err != nil {
 		diagnostics = append(diagnostics, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Unable to create provider client connection",
+			Summary:  "Unable to create provider client connection with database",
 			Detail:   err.Error(),
 		})
 		return nil, diagnostics
 	}
 
-	diagnostics = append(diagnostics, diag.Diagnostic{
-		Severity: diag.Warning,
-		Summary:  "Warning Message Summary",
-		Detail:   "This is the detailed warning message from providerConfigure",
-	})
-
-	return connection, diagnostics
+	return credentials, diagnostics
 }
 
 

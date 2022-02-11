@@ -1,16 +1,11 @@
+Terraform Provider for PostgreSQL
+=================================
 
-Terraform Provider for Azure Porsgres Sql Database Operations
-
-$ go mod vendor
-
-$ go build -o terraform-provider-azure-postgres-user
-
-$ export OS_ARCH="$(go env GOHOSTOS)_$(go env GOHOSTARCH)"
-
-$ mkdir -p ~/.terraform.d/plugins/hashicorp.com/edu/azure-postgres-user/0.2/$OS_ARCH
-
-$ mv terraform-provider-azure-postgres-user ~/.terraform.d/plugins/hashicorp.com/edu/azure-postgres-user/0.2/$OS_ARCH
-
-$ terraform init && terraform apply --auto-approve
+This provider allows to manage with Terraform [Postgresql](https://www.postgresql.org/) objects like databases, extensions, roles, etc..
 
 
+Requirements
+------------
+
+-	[Terraform](https://www.terraform.io/downloads.html) 0.12.x
+-	[Go](https://golang.org/doc/install) 1.16 (to build the provider plugin)
