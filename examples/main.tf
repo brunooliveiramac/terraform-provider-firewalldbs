@@ -10,26 +10,22 @@ terraform {
 provider "azurepostgressql" {
   host     = "bees-eastus2-pim-sandbox.postgres.database.azure.com"
   port     = 5432
-  database = "postgres"
+  database = "pim"
   username = ""
   password = ""
 }
 
 resource "azurepostgressql_role" "default" {
-  name        = "read_write"
+  name        = "manager1"
+  database    = "pim"
+  schema      = "public"
+  tables      = ["ALL"]
   privileges  = ["SELECT", "DELETE"]
 }
 
 resource "azurepostgressql_user" "brunom" {
-  username     = "brunom"
-  password     = "brunom"
-  database     = "pim"
-  role          = azurepostgressql_role.default.name
-}
-
-resource "azurepostgressql_user" "bastiao" {
-  username     = "bastiao"
-  password     = "bastiao"
-  database     = "postgres"
+  username     = "pirulito2"
+  password     = "kYsun3sAUG456Xu9"
   role         = azurepostgressql_role.default.name
 }
+

@@ -6,4 +6,4 @@ go get -d -v ./... \
   && rm -rf examples/.terraform \
   && rm -rf examples/.terraform.lock.hcl \
   && cd examples \
-  && terraform init && terraform plan
+  && terraform init && terraform apply
