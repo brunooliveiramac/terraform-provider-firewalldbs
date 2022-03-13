@@ -3,7 +3,7 @@ package firewalldbs
 import (
 	"context"
 	"fmt"
-	"github.com/brunooliveiramac/azure-postgres-user-provider/firewalldbs/data_provider"
+	"terraform-provider-firewalldbs/firewalldbs/data_provider"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
