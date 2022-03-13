@@ -1,31 +1,24 @@
 terraform {
   required_providers {
-    azurepostgressql = {
-      version = "0.2"
-      source  = "hashicorp.com/edu/azurepostgressql"
+    firewalldbs = {
+      version = "1.0.0"
+      source  = "hashicorp.com/firewalldbs"
     }
   }
 }
 
-provider "azurepostgressql" {
-  host     = "bees-eastus2-pim-sandbox.postgres.database.azure.com"
-  port     = 5432
-  database = "pim"
-  username = ""
-  password = ""
+provider "firewalldbs" {}
+
+resource "firewalldbs_open" "default" {
+  server_name         = "brunoxy-ix4-north-eu-sandbox"
+  resource_group_name = "bees-eu-sbx-brunoxy"
 }
 
-resource "azurepostgressql_role" "default" {
-  name        = "manager1"
-  database    = "pim"
-  schema      = "public"
-  tables      = ["ALL"]
-  privileges  = ["SELECT", "DELETE"]
-}
-
-resource "azurepostgressql_user" "brunom" {
-  username     = "pirulito2"
-  password     = "kYsun3sAUG456Xu9"
-  role         = azurepostgressql_role.default.name
+resource "firewalldbs_close" "default" {
+  server_name         = "brunoxy-ix4-north-eu-sandbox"
+  resource_group_name = "bees-eu-sbx-brunoxy"
+  depends_on = [
+    firewalldbs_open.default
+  ]
 }
 
