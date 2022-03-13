@@ -6,11 +6,11 @@ Terraform provider for interacting with Firewall Rule of mysql, postgres databas
 ---
 
 # Firewalldbs Provider
+### InProgress...
 
 The Firewaldbs providers is intended to interact with all database firewall from Azure. This is needed to add
 an ip in order to be able to create users and granting permissions.
-1. use the provider to open an ip on the database server.
-1. then, remove this ip from the database.
+
 
 ## Example Usage
 
