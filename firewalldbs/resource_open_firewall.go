@@ -35,6 +35,8 @@ func resourceOpenFirewall() *schema.Resource {
 
 func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
 
+	randomID := uniuri.New()
+
 	var diagnostics diag.Diagnostics
 
 	connection := providerConfig.(*data_provider.Connection)
@@ -65,7 +67,11 @@ func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceDa
 
 	resource.SetId("AgentIP")
 
-	resourceOpenFirewallRead(ctx, resource, providerConfig)
+	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+
+	if err := resource.Set("agent_ip", ipName); err != nil {
+		return diag.FromErr(err)
+	}
 
 	return diagnostics
 }
@@ -112,7 +118,7 @@ func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData
 		return diag.FromErr(err)
 	}
 
-	resource.SetId("AgentIP")
+	resource.SetId(ipName)
 
 	return diagnostics
 }
@@ -121,13 +127,39 @@ func resourceOpenFirewallUpdate(ctx context.Context, resource *schema.ResourceDa
 
 	var diagnostics diag.Diagnostics
 
-
-	resource.SetId("AgentIP")
-
 	connection := providerConfig.(*data_provider.Connection)
 
+	serverName := resource.Get("server_name").(string)
+	resourceGroup := resource.Get("resource_group_name").(string)
 
-	if err := resource.Set("agent_ip", connection.AgentIP); err != nil {
+	firewallRule := data_provider.ServerFirewallIpRule{
+		IP:            connection.AgentIP,
+		ServerName:    serverName,
+		ResourceGroup: resourceGroup,
+		Subscription:  connection.Subscription,
+	}
+
+	err := data_provider.AddAgentIp(&firewallRule, connection.Token)
+
+	if err != nil {
+		msg := fmt.Sprintf("%s", err)
+
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Unable to Add Agent IP",
+			Detail:   msg,
+		})
+
+		return diagnostics
+	}
+
+	randomID := uniuri.New()
+
+	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+
+	resource.SetId(ipName)
+
+	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
 	}
 

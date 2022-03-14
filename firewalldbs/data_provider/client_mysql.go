@@ -118,9 +118,7 @@ func Login(credential *Credential) (token string, err error) {
 
 func GetFirewallRule(firewall *ServerFirewallIpRule, token string) (ruleName string, err error) {
 
-	name := strings.Replace(firewall.IP, ".", "_", -1)
-
-	requestUrl := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBForMySQL/servers/%s/firewallRules/AllowAgent%s?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName, name)
+	requestUrl := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBForMySQL/servers/%s/firewallRules/AllowAgent?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName)
 
 	req, _ := http.NewRequest("GET", requestUrl, nil)
 
@@ -177,9 +175,7 @@ func AddAgentIp(firewall *ServerFirewallIpRule, token string) (err error) {
 
 	jsonValue, _ := json.Marshal(request)
 
-	name := strings.Replace(firewall.IP, ".", "_", -1)
-
-	requestUrl := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBForMySQL/servers/%s/firewallRules/AllowAgent%s?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName, name)
+	requestUrl := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBForMySQL/servers/%s/firewallRules/AllowAgent?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName)
 
 	req, _ := http.NewRequest("PUT", requestUrl, bytes.NewBuffer(jsonValue))
 
@@ -219,9 +215,7 @@ func AddAgentIp(firewall *ServerFirewallIpRule, token string) (err error) {
 
 func DeleteAgentIp(firewall *ServerFirewallIpRule, token string) (err error) {
 
-	name := strings.Replace(firewall.IP, ".", "_", -1)
-
-	requestUrl := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBForMySQL/servers/%s/firewallRules/AllowAgent%s?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName, name)
+	requestUrl := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBForMySQL/servers/%s/firewallRules/AllowAgent?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName)
 
 	req, _ := http.NewRequest("DELETE", requestUrl, nil)
 

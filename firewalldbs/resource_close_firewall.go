@@ -3,6 +3,7 @@ package firewalldbs
 import (
 	"context"
 	"fmt"
+	"github.com/dchest/uniuri"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"terraform-provider-firewalldbs/firewalldbs/data_provider"
@@ -34,6 +35,8 @@ func resourceCloseFirewall() *schema.Resource {
 
 func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
 
+	randomID := uniuri.New()
+
 	var diagnostics diag.Diagnostics
 
 	connection := providerConfig.(*data_provider.Connection)
@@ -64,12 +67,58 @@ func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceD
 
 	resource.SetId("AgentIP")
 
-	resourceCloseFirewallRead(ctx, resource, providerConfig)
+	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
 
+	if err := resource.Set("agent_ip", ipName); err != nil {
+		return diag.FromErr(err)
+	}
 	return diagnostics
 }
 
 func resourceCloseFirewallRead(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
+
+	randomID := uniuri.New()
+
+	var diagnostics diag.Diagnostics
+
+	connection := providerConfig.(*data_provider.Connection)
+
+	//serverName := resource.Get("server_name").(string)
+	//resourceGroup := resource.Get("resource_group_name").(string)
+
+	//firewallRule := data_provider.ServerFirewallIpRule{
+	//	IP:            connection.AgentIP,
+	//	ServerName:    serverName,
+	//	ResourceGroup: resourceGroup,
+	//	Subscription:  connection.Subscription,
+	//}
+
+	//err := data_provider.DeleteAgentIp(&firewallRule, connection.Token)
+	//
+	//if err != nil {
+	//	msg := fmt.Sprintf("%s", err)
+	//
+	//	diagnostics = append(diagnostics, diag.Diagnostic{
+	//		Severity: diag.Error,
+	//		Summary:  "Unable To Delete Rule",
+	//		Detail:   msg,
+	//	})
+	//	return diagnostics
+	//}
+
+
+	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+
+	if err := resource.Set("agent_ip", ipName); err != nil {
+		return diag.FromErr(err)
+	}
+
+	resource.SetId(ipName)
+
+	return diagnostics
+}
+
+func resourceCloseFirewallUpdate(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
 
 	var diagnostics diag.Diagnostics
 
@@ -92,34 +141,23 @@ func resourceCloseFirewallRead(ctx context.Context, resource *schema.ResourceDat
 
 		diagnostics = append(diagnostics, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Unable To Delete Rule",
+			Summary:  "Unable to Add Agent IP",
 			Detail:   msg,
 		})
+
 		return diagnostics
 	}
 
-	if err := resource.Set("agent_ip", connection.AgentIP); err != nil {
+
+	randomID := uniuri.New()
+
+	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+
+	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
 	}
 
-	resource.SetId("AgentIP")
-
-	return diagnostics
-}
-
-func resourceCloseFirewallUpdate(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
-
-	var diagnostics diag.Diagnostics
-
-
-	resource.SetId("AgentIP")
-
-	connection := providerConfig.(*data_provider.Connection)
-
-
-	if err := resource.Set("agent_ip", connection.AgentIP); err != nil {
-		return diag.FromErr(err)
-	}
+	resource.SetId(ipName)
 
 	return diagnostics
 }
