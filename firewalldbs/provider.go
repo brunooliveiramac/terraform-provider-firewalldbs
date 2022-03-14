@@ -2,9 +2,9 @@ package firewalldbs
 
 import (
 	"context"
-	dataprovider "terraform-provider-firewalldbs/firewalldbs/data_provider"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	dataprovider "terraform-provider-firewalldbs/firewalldbs/data_provider"
 )
 
 // Provider -
@@ -34,8 +34,8 @@ func Provider() *schema.Provider {
 			},
 			"agent_ip": {
 				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("AGENT_IP", nil),
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("AGENT_IP", ""),
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{

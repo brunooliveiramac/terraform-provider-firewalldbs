@@ -26,8 +26,8 @@ func resourceCloseFirewall() *schema.Resource {
 			},
 			"agent_ip": {
 				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("AGENT_IP", nil),
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("AGENT_IP", ""),
 			},
 		},
 	}
@@ -67,7 +67,22 @@ func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceD
 
 	resource.SetId("AgentIP")
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+	ip, err := data_provider.GetIp(connection.AgentIP)
+
+	if err != nil {
+		msg := fmt.Sprintf("%s", err)
+
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Unable to get IP",
+			Detail:   msg,
+		})
+
+		return diagnostics
+	}
+
+	ipName := fmt.Sprintf("%s_%s", ip, randomID)
+
 
 	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
@@ -83,31 +98,21 @@ func resourceCloseFirewallRead(ctx context.Context, resource *schema.ResourceDat
 
 	connection := providerConfig.(*data_provider.Connection)
 
-	//serverName := resource.Get("server_name").(string)
-	//resourceGroup := resource.Get("resource_group_name").(string)
+	ip, err := data_provider.GetIp(connection.AgentIP)
 
-	//firewallRule := data_provider.ServerFirewallIpRule{
-	//	IP:            connection.AgentIP,
-	//	ServerName:    serverName,
-	//	ResourceGroup: resourceGroup,
-	//	Subscription:  connection.Subscription,
-	//}
+	if err != nil {
+		msg := fmt.Sprintf("%s", err)
 
-	//err := data_provider.DeleteAgentIp(&firewallRule, connection.Token)
-	//
-	//if err != nil {
-	//	msg := fmt.Sprintf("%s", err)
-	//
-	//	diagnostics = append(diagnostics, diag.Diagnostic{
-	//		Severity: diag.Error,
-	//		Summary:  "Unable To Delete Rule",
-	//		Detail:   msg,
-	//	})
-	//	return diagnostics
-	//}
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Unable to get IP",
+			Detail:   msg,
+		})
 
+		return diagnostics
+	}
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+	ipName := fmt.Sprintf("%s_%s", ip, randomID)
 
 	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
@@ -151,7 +156,22 @@ func resourceCloseFirewallUpdate(ctx context.Context, resource *schema.ResourceD
 
 	randomID := uniuri.New()
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+	ip, err := data_provider.GetIp(connection.AgentIP)
+
+	if err != nil {
+		msg := fmt.Sprintf("%s", err)
+
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Unable to get IP",
+			Detail:   msg,
+		})
+
+		return diagnostics
+	}
+
+	ipName := fmt.Sprintf("%s_%s", ip, randomID)
+
 
 	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)

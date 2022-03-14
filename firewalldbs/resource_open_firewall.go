@@ -26,8 +26,8 @@ func resourceOpenFirewall() *schema.Resource {
 			},
 			"agent_ip": {
 				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("AGENT_IP", nil),
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("AGENT_IP", ""),
 			},
 		},
 	}
@@ -67,7 +67,21 @@ func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceDa
 
 	resource.SetId("AgentIP")
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+	ip, err := data_provider.GetIp(connection.AgentIP)
+
+	if err != nil {
+		msg := fmt.Sprintf("%s", err)
+
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Unable to get IP",
+			Detail:   msg,
+		})
+
+		return diagnostics
+	}
+
+	ipName := fmt.Sprintf("%s_%s", ip, randomID)
 
 	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
@@ -112,7 +126,21 @@ func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData
 	// outside terraform
 	// Read expects the infra to be the same as the tfState
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+	ip, err := data_provider.GetIp(connection.AgentIP)
+
+	if err != nil {
+		msg := fmt.Sprintf("%s", err)
+
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Unable to get IP",
+			Detail:   msg,
+		})
+
+		return diagnostics
+	}
+
+	ipName := fmt.Sprintf("%s_%s", ip, randomID)
 
 	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
@@ -155,7 +183,21 @@ func resourceOpenFirewallUpdate(ctx context.Context, resource *schema.ResourceDa
 
 	randomID := uniuri.New()
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+	ip, err := data_provider.GetIp(connection.AgentIP)
+
+	if err != nil {
+		msg := fmt.Sprintf("%s", err)
+
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Unable to get IP",
+			Detail:   msg,
+		})
+
+		return diagnostics
+	}
+
+	ipName := fmt.Sprintf("%s_%s", ip, randomID)
 
 	resource.SetId(ipName)
 

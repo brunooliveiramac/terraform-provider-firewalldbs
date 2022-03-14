@@ -61,6 +61,43 @@ type FirewallRuleResponse struct {
 	Name        string    `json:"name"`
 }
 
+
+func GetIp(agentIp string) (ip string, err error) {
+
+	if len(agentIp) > 0 {
+		ip = agentIp
+	}
+
+	requestUrl := fmt.Sprintf("https://ipinfo.io/ip")
+
+	req, _ := http.NewRequest("GET", requestUrl, nil)
+
+	resp, _ := client.Do(req)
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	requestDump, err := httputil.DumpRequest(req, true)
+
+	if err != nil {
+		return "", err
+	}
+
+	bodyString := string(bodyBytes)
+
+	msg := fmt.Sprintf("Request: %s, Response %s", string(requestDump), bodyString)
+
+
+	if resp.StatusCode != 200 {
+		log.Printf("Error : %d", resp.StatusCode)
+		return "", errors.New(msg)
+	}
+
+	return bodyString, nil
+}
+
 func Login(credential *Credential) (token string, err error) {
 
 	data := url.Values{}
@@ -166,9 +203,15 @@ func GetFirewallRule(firewall *ServerFirewallIpRule, token string) (ruleName str
 
 func AddAgentIp(firewall *ServerFirewallIpRule, token string) (err error) {
 
+	ip, err := GetIp(firewall.IP)
+
+	if err != nil {
+		return errors.New(err.Error())
+	}
+
 	properties := Properties{
-		Start: firewall.IP,
-		End:   firewall.IP,
+		Start: ip,
+		End:   ip,
 	}
 
 	request := AgentRequest{properties}
