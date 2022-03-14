@@ -3,9 +3,10 @@ package firewalldbs
 import (
 	"context"
 	"fmt"
-	"terraform-provider-firewalldbs/firewalldbs/data_provider"
+	"github.com/dchest/uniuri"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"terraform-provider-firewalldbs/firewalldbs/data_provider"
 )
 
 func resourceOpenFirewall() *schema.Resource {
@@ -71,6 +72,8 @@ func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceDa
 
 func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
 
+	randomID := uniuri.New()
+
 	var diagnostics diag.Diagnostics
 
 	connection := providerConfig.(*data_provider.Connection)
@@ -103,7 +106,9 @@ func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData
 	// outside terraform
 	// Read expects the infra to be the same as the tfState
 
-	if err := resource.Set("agent_ip", connection.AgentIP); err != nil {
+	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
+
+	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
 	}
 
