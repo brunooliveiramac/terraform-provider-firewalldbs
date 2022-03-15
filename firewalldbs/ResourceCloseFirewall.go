@@ -49,12 +49,15 @@ func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceD
 
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
+	serverId := resource.Get("server_id").(string)
+
 
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
+		ServerID:      serverId,
 	}
 
 	provider := service.GetProvider()
@@ -111,12 +114,14 @@ func resourceCloseFirewallUpdate(ctx context.Context, resource *schema.ResourceD
 
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
+	serverId := resource.Get("server_id").(string)
 
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
+		ServerID:      serverId,
 	}
 
 	provider := service.GetProvider()

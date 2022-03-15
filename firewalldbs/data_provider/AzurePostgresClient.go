@@ -16,6 +16,10 @@ import (
 
 type PostgresProvider struct {}
 
+func NewAzurePostgresProvider() core.Database {
+	return &PostgresProvider{}
+}
+
 func (p PostgresProvider) AddAgentIp(firewall *entity.ServerFirewallIpRule, token string) (err error) {
 
 	properties := model.Properties{
@@ -99,9 +103,5 @@ func (p PostgresProvider) DeleteAgentIp(firewall *entity.ServerFirewallIpRule, t
 
 	return nil
 
-}
-
-func NewPostgresProvider() core.Database {
-	return &PostgresProvider{}
 }
 
