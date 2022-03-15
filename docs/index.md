@@ -7,10 +7,14 @@ Terraform provider for interacting with Firewall Rule of mysql, postgres databas
 
 # Firewalldbs Provider
 
-The Firewaldbs providers is intended to interact with all database firewall from Azure. In order to add some resources
+The Firewaldbs providers is intended to interact with all database firewall from specific cloud providers. In order to add some resources
 like user on databases that have firewall rules, the agent ip
 from terraform must be added and also removed after applying the resources.
 
+### Supported Providers:
+
+- Azure MySql
+- Azure Postgres
 
 ## Example Usage
 
