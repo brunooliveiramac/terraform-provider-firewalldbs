@@ -26,6 +26,7 @@ resource "firewalldbs_close" "default" {
   server_name         = "db_server_name"
   resource_group_name = "db_resource_group_name"
   agent_ip            = "192.168.1.1"
+  server_id           = "/subscriptions/111111-111111-111111-111111-111111/resourceGroups/some-rg/providers/Microsoft.DBforMySQL/servers/some-server"
 
   depends_on = [
     firewalldbs_open.default,
