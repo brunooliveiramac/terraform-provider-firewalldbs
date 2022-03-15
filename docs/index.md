@@ -6,12 +6,10 @@ Terraform provider for interacting with Firewall Rule of mysql, postgres databas
 ---
 
 # Firewalldbs Provider
-### InProgress...
 
 The Firewaldbs providers is intended to interact with all database firewall from Azure. In order to add some resources
 like user on databases that have firewall rules, the agent ip
 from terraform must be added and also removed after applying the resources.
-
 
 
 ## Example Usage
@@ -22,13 +20,13 @@ Do not keep your authentication password in HCL for production environments, use
 terraform {
   required_providers {
     azurerm = {
-      source  = "brunooliveiramac/firewaldbs"
+      source  = "brunooliveiramac/firewalldbs"
       version = "=1.0.0"
     }
   }
 }
 
-provider "firewalldbs" { }
+provider "firewalldbs" {}
 
 resource "firewalldbs_open" "default" {
   server_name         = "db_server_name"
@@ -53,7 +51,7 @@ resource "firewalldbs_close" "default" {
 
 ### firewalldbs
 
-- `agent_ip` - (Required) IP to be inserted on the firewall.
+- `agent_ip` - (Optional) IP to be inserted on the firewall. This will be automatically retrieved by the provider.
 - `client_id` - (Required) The Client ID which should be used. This can also be sourced from the `ARM_CLIENT_ID` Environment Variable.
 - `client_secret` - (Required) The Client Secret which should be used. This can also be sourced from the `ARM_CLIENT_SECRET` Environment Variable.
 - `subscription_id` - (Required) The Subscription ID which should be used. This can also be sourced from the `ARM_SUBSCRIPTION_ID` Environment Variable.

@@ -43,7 +43,7 @@ resource "firewalldbs_close" "default" {
 
 - `resource_group_name` - (Required) The resource group name on azure that has the server.
 - `server_name` - (Required) The server name.
-- `agent_ip` - (Required) The agent ip to be removed from this server.
+- `agent_ip` - (Optional) The agent ip to be removed from this server.
 
 
 ### Optional

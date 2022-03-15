@@ -5,6 +5,7 @@ NAME=firewalldbs
 BINARY=terraform-provider-${NAME}
 VERSION=1.0.1
 OS_ARCH=linux_amd64
+GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 
 default: install
 
@@ -24,3 +25,6 @@ test:
 
 testacc:
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
+
+fmt:
+	gofmt -w $(GOFMT_FILES)

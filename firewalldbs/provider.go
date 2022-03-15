@@ -70,7 +70,18 @@ func providerConfigure(ctx context.Context, resource *schema.ResourceData) (inte
 	if err != nil {
 		diagnostics = append(diagnostics, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Unable to create provider client connection with database",
+			Summary:  "Unable to create provider client connection the Cloud Provider",
+			Detail:   err.Error(),
+		})
+		return nil, diagnostics
+	}
+
+	ip, err := dataprovider.GetIp(agentIp)
+
+	if err != nil {
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Unable to obtain agent ip",
 			Detail:   err.Error(),
 		})
 		return nil, diagnostics
@@ -79,7 +90,7 @@ func providerConfigure(ctx context.Context, resource *schema.ResourceData) (inte
 	connection := &dataprovider.Connection{
 		Subscription: subscriptionId,
 		Token:        token,
-		AgentIP:      agentIp,
+		AgentIP:      ip,
 	}
 
 	return connection, diagnostics

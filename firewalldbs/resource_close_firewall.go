@@ -67,26 +67,12 @@ func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceD
 
 	resource.SetId("AgentIP")
 
-	ip, err := data_provider.GetIp(connection.AgentIP)
-
-	if err != nil {
-		msg := fmt.Sprintf("%s", err)
-
-		diagnostics = append(diagnostics, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Unable to get IP",
-			Detail:   msg,
-		})
-
-		return diagnostics
-	}
-
-	ipName := fmt.Sprintf("%s_%s", ip, randomID)
-
+	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
 
 	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
 	}
+
 	return diagnostics
 }
 
@@ -98,21 +84,7 @@ func resourceCloseFirewallRead(ctx context.Context, resource *schema.ResourceDat
 
 	connection := providerConfig.(*data_provider.Connection)
 
-	ip, err := data_provider.GetIp(connection.AgentIP)
-
-	if err != nil {
-		msg := fmt.Sprintf("%s", err)
-
-		diagnostics = append(diagnostics, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Unable to get IP",
-			Detail:   msg,
-		})
-
-		return diagnostics
-	}
-
-	ipName := fmt.Sprintf("%s_%s", ip, randomID)
+	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
 
 	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
@@ -146,32 +118,16 @@ func resourceCloseFirewallUpdate(ctx context.Context, resource *schema.ResourceD
 
 		diagnostics = append(diagnostics, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Unable to Add Agent IP",
+			Summary:  "Unable to Remove Agent IP",
 			Detail:   msg,
 		})
 
 		return diagnostics
 	}
-
 
 	randomID := uniuri.New()
 
-	ip, err := data_provider.GetIp(connection.AgentIP)
-
-	if err != nil {
-		msg := fmt.Sprintf("%s", err)
-
-		diagnostics = append(diagnostics, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Unable to get IP",
-			Detail:   msg,
-		})
-
-		return diagnostics
-	}
-
-	ipName := fmt.Sprintf("%s_%s", ip, randomID)
-
+	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
 
 	if err := resource.Set("agent_ip", ipName); err != nil {
 		return diag.FromErr(err)
@@ -190,10 +146,9 @@ func resourceCloseFirewallDelete(ctx context.Context, resource *schema.ResourceD
 
 	diagnostics = append(diagnostics, diag.Diagnostic{
 		Severity: diag.Warning,
-		Summary:  "Removing AgentName from tfState",
-		Detail:   "Info: The delete does not actually remove anything, To do it use the close resource.",
+		Summary:  "Info",
+		Detail:   "The deletion does not actually remove the firewall IP. To do it use the close resource.",
 	})
-	return diagnostics
 
 	return diagnostics
 }

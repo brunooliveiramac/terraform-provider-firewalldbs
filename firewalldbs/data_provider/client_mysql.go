@@ -58,9 +58,8 @@ type ServerFirewallIpRule struct {
 
 type FirewallRuleResponse struct {
 	Properties Properties `json:"properties"`
-	Name        string    `json:"name"`
+	Name       string     `json:"name"`
 }
-
 
 func GetIp(agentIp string) (ip string, err error) {
 
@@ -89,7 +88,6 @@ func GetIp(agentIp string) (ip string, err error) {
 
 	msg := fmt.Sprintf("Request: %s, Response %s", string(requestDump), bodyString)
 
-
 	if resp.StatusCode != 200 {
 		log.Printf("Error : %d", resp.StatusCode)
 		return "", errors.New(msg)
@@ -117,8 +115,6 @@ func Login(credential *Credential) (token string, err error) {
 		return "", err
 	}
 
-	fmt.Println(string(requestDump))
-
 	resp, _ := client.Do(req)
 
 	bodyBytes, err := io.ReadAll(resp.Body)
@@ -127,8 +123,6 @@ func Login(credential *Credential) (token string, err error) {
 	}
 
 	bodyString := string(bodyBytes)
-
-	println(bodyString)
 
 	msg := fmt.Sprintf("Request: %s, Response %s", string(requestDump), bodyString)
 
@@ -147,8 +141,6 @@ func Login(credential *Credential) (token string, err error) {
 		fmt.Printf("Error: %s\n", err.Error())
 		return "", errors.New(err.Error())
 	}
-
-	fmt.Println(responseModel.AccessToken)
 
 	return responseModel.AccessToken, nil
 }
@@ -172,7 +164,6 @@ func GetFirewallRule(firewall *ServerFirewallIpRule, token string) (ruleName str
 	}
 
 	requestDump, err := httputil.DumpRequest(req, true)
-
 	if err != nil {
 		return "", err
 	}
@@ -195,23 +186,15 @@ func GetFirewallRule(firewall *ServerFirewallIpRule, token string) (ruleName str
 		return "", errors.New(msg)
 	}
 
-	println(responseModel.Name)
-
 	return responseModel.Name, nil
 
 }
 
 func AddAgentIp(firewall *ServerFirewallIpRule, token string) (err error) {
 
-	ip, err := GetIp(firewall.IP)
-
-	if err != nil {
-		return errors.New(err.Error())
-	}
-
 	properties := Properties{
-		Start: ip,
-		End:   ip,
+		Start: firewall.IP,
+		End:   firewall.IP,
 	}
 
 	request := AgentRequest{properties}
@@ -241,8 +224,6 @@ func AddAgentIp(firewall *ServerFirewallIpRule, token string) (err error) {
 	}
 
 	bodyString := string(bodyBytes)
-
-	println(bodyString)
 
 	msg := fmt.Sprintf("Request: %s, Response %s", string(requestDump), bodyString)
 
@@ -276,8 +257,6 @@ func DeleteAgentIp(firewall *ServerFirewallIpRule, token string) (err error) {
 	}
 
 	bodyString := string(bodyBytes)
-
-	println(bodyString)
 
 	requestDump, err := httputil.DumpRequest(req, true)
 
