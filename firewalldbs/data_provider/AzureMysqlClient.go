@@ -19,7 +19,7 @@ var client = &http.Client{Timeout: time.Second * 180}
 
 type MysqlProvider struct {}
 
-func NewMysqlProvider() core.Database {
+func NewAzureMysqlProvider() core.Database {
 	return &MysqlProvider{}
 }
 
