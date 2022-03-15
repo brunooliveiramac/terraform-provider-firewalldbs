@@ -4,7 +4,9 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"terraform-provider-firewalldbs/firewalldbs/core/entity"
 	dataprovider "terraform-provider-firewalldbs/firewalldbs/data_provider"
+	"terraform-provider-firewalldbs/firewalldbs/data_provider/model"
 )
 
 // Provider -
@@ -57,7 +59,7 @@ func providerConfigure(ctx context.Context, resource *schema.ResourceData) (inte
 
 	var diagnostics diag.Diagnostics
 
-	credentials := dataprovider.Credential{
+	credentials := entity.Credential{
 		GrantType:    "client_credentials",
 		ClientId:     clientId,
 		ClientSecret: clientSecret,
@@ -65,7 +67,9 @@ func providerConfigure(ctx context.Context, resource *schema.ResourceData) (inte
 		Tenant:       tenantId,
 	}
 
-	token, err := dataprovider.Login(&credentials)
+	azure := dataprovider.NewAzureProvider()
+
+	token, err := azure.Login(&credentials)
 
 	if err != nil {
 		diagnostics = append(diagnostics, diag.Diagnostic{
@@ -76,7 +80,11 @@ func providerConfigure(ctx context.Context, resource *schema.ResourceData) (inte
 		return nil, diagnostics
 	}
 
-	ip, err := dataprovider.GetIp(agentIp)
+	ip, err := azure.GetAgentIp()
+
+	if len(agentIp) > 0 {
+		ip = agentIp
+	}
 
 	if err != nil {
 		diagnostics = append(diagnostics, diag.Diagnostic{
@@ -87,7 +95,7 @@ func providerConfigure(ctx context.Context, resource *schema.ResourceData) (inte
 		return nil, diagnostics
 	}
 
-	connection := &dataprovider.Connection{
+	connection := &model.Connection{
 		Subscription: subscriptionId,
 		Token:        token,
 		AgentIP:      ip,

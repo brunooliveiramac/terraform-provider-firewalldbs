@@ -6,7 +6,9 @@ import (
 	"github.com/dchest/uniuri"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"terraform-provider-firewalldbs/firewalldbs/data_provider"
+	"terraform-provider-firewalldbs/firewalldbs/core/entity"
+	"terraform-provider-firewalldbs/firewalldbs/core/service"
+	"terraform-provider-firewalldbs/firewalldbs/data_provider/model"
 )
 
 func resourceCloseFirewall() *schema.Resource {
@@ -16,6 +18,10 @@ func resourceCloseFirewall() *schema.Resource {
 		UpdateContext: resourceCloseFirewallUpdate,
 		DeleteContext: resourceCloseFirewallDelete,
 		Schema: map[string]*schema.Schema{
+			"server_id": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 			"server_name": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -39,19 +45,21 @@ func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceD
 
 	var diagnostics diag.Diagnostics
 
-	connection := providerConfig.(*data_provider.Connection)
+	connection := providerConfig.(*model.Connection)
 
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
 
-	firewallRule := data_provider.ServerFirewallIpRule{
+	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
 	}
 
-	err := data_provider.DeleteAgentIp(&firewallRule, connection.Token)
+	provider := service.GetProvider()
+
+	err := provider.RemoveIp(&firewallRule, connection.Token)
 
 	if err != nil {
 		msg := fmt.Sprintf("%s", err)
@@ -82,7 +90,7 @@ func resourceCloseFirewallRead(ctx context.Context, resource *schema.ResourceDat
 
 	var diagnostics diag.Diagnostics
 
-	connection := providerConfig.(*data_provider.Connection)
+	connection := providerConfig.(*model.Connection)
 
 	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
 
@@ -99,19 +107,21 @@ func resourceCloseFirewallUpdate(ctx context.Context, resource *schema.ResourceD
 
 	var diagnostics diag.Diagnostics
 
-	connection := providerConfig.(*data_provider.Connection)
+	connection := providerConfig.(*model.Connection)
 
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
 
-	firewallRule := data_provider.ServerFirewallIpRule{
+	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
 	}
 
-	err := data_provider.DeleteAgentIp(&firewallRule, connection.Token)
+	provider := service.GetProvider()
+
+	err := provider.RemoveIp(&firewallRule, connection.Token)
 
 	if err != nil {
 		msg := fmt.Sprintf("%s", err)
