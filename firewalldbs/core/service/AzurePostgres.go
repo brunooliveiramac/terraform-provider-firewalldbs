@@ -1,6 +1,7 @@
 package service
 
 import (
+	"strings"
 	"terraform-provider-firewalldbs/firewalldbs/core/entity"
 	"terraform-provider-firewalldbs/firewalldbs/data_provider"
 )
@@ -10,7 +11,8 @@ type AzurePostgres struct {
 }
 
 func (postgresInstance *AzurePostgres) AddIp(ipRule *entity.ServerFirewallIpRule, token string)  error {
-	if ipRule.ServerID == "Postgres" {
+	ids := strings.Split(ipRule.ServerID, "/")
+	if contains(ids, "Microsoft.DBforPostgreSQL") {
 		postgresProvider := data_provider.NewPostgresProvider()
 		err := postgresProvider.AddAgentIp(ipRule, token)
 
@@ -22,7 +24,8 @@ func (postgresInstance *AzurePostgres) AddIp(ipRule *entity.ServerFirewallIpRule
 }
 
 func (postgresInstance *AzurePostgres) RemoveIp(ipRule *entity.ServerFirewallIpRule, token string)  error {
-	if ipRule.ServerID == "Postgres" {
+	ids := strings.Split(ipRule.ServerID, "/")
+	if contains(ids, "Microsoft.DBforPostgreSQL") {
 		postgresProvider := data_provider.NewPostgresProvider()
 		err := postgresProvider.AddAgentIp(ipRule, token)
 
