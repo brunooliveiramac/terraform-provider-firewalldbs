@@ -6,7 +6,9 @@ import (
 	"github.com/dchest/uniuri"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"terraform-provider-firewalldbs/firewalldbs/data_provider"
+	"terraform-provider-firewalldbs/firewalldbs/core/entity"
+	"terraform-provider-firewalldbs/firewalldbs/core/service"
+	"terraform-provider-firewalldbs/firewalldbs/data_provider/model"
 )
 
 func resourceOpenFirewall() *schema.Resource {
@@ -16,6 +18,10 @@ func resourceOpenFirewall() *schema.Resource {
 		UpdateContext: resourceOpenFirewallUpdate,
 		DeleteContext: resourceOpenFirewallDelete,
 		Schema: map[string]*schema.Schema{
+			"server_id": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 			"server_name": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -39,19 +45,24 @@ func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceDa
 
 	var diagnostics diag.Diagnostics
 
-	connection := providerConfig.(*data_provider.Connection)
+	connection := providerConfig.(*model.Connection)
 
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
+	serverID := resource.Get("server_id").(string)
 
-	firewallRule := data_provider.ServerFirewallIpRule{
+
+	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
+		ServerID: serverID,
 	}
 
-	err := data_provider.AddAgentIp(&firewallRule, connection.Token)
+	provider := service.GetProvider()
+
+	err := provider.AddIp(&firewallRule, connection.Token)
 
 	if err != nil {
 		msg := fmt.Sprintf("%s", err)
@@ -82,19 +93,24 @@ func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData
 
 	var diagnostics diag.Diagnostics
 
-	connection := providerConfig.(*data_provider.Connection)
+	connection := providerConfig.(*model.Connection)
 
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
+	serverID := resource.Get("server_id").(string)
 
-	firewallRule := data_provider.ServerFirewallIpRule{
+
+	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
+		ServerID: serverID,
 	}
 
-	err := data_provider.AddAgentIp(&firewallRule, connection.Token)
+	provider := service.GetProvider()
+
+	err := provider.AddIp(&firewallRule, connection.Token)
 
 	if err != nil {
 		msg := fmt.Sprintf("%s", err)
@@ -123,19 +139,23 @@ func resourceOpenFirewallUpdate(ctx context.Context, resource *schema.ResourceDa
 
 	var diagnostics diag.Diagnostics
 
-	connection := providerConfig.(*data_provider.Connection)
+	connection := providerConfig.(*model.Connection)
 
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
+	serverID := resource.Get("server_id").(string)
 
-	firewallRule := data_provider.ServerFirewallIpRule{
+	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
+		ServerID: serverID,
 	}
 
-	err := data_provider.AddAgentIp(&firewallRule, connection.Token)
+	provider := service.GetProvider()
+
+	err := provider.AddIp(&firewallRule, connection.Token)
 
 	if err != nil {
 		msg := fmt.Sprintf("%s", err)
@@ -177,3 +197,4 @@ func resourceOpenFirewallDelete(ctx context.Context, resource *schema.ResourceDa
 
 	return diagnostics
 }
+
