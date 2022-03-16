@@ -1,6 +1,5 @@
 package model
 
-
 type LoginResponse struct {
 	TokenType    string `json:"token_type"`
 	ExpiresIn    string `json:"expires_in"`
@@ -10,4 +9,3 @@ type LoginResponse struct {
 	Resource     string `json:"resource"`
 	AccessToken  string `json:"access_token"`
 }
-

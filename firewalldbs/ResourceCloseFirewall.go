@@ -51,7 +51,6 @@ func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceD
 	resourceGroup := resource.Get("resource_group_name").(string)
 	serverId := resource.Get("server_id").(string)
 
-
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,

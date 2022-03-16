@@ -5,4 +5,3 @@ type Connection struct {
 	Token        string
 	AgentIP      string
 }
-

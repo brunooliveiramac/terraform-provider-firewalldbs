@@ -7,4 +7,3 @@ type Credential struct {
 	Resource     string `json:"resource"`
 	Tenant       string `json:"tenant_id"`
 }
-

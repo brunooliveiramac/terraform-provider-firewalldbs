@@ -23,6 +23,5 @@ resource "firewalldbs_close" "default" {
   depends_on = [
     firewalldbs_open.default
   ]
-
 }
 

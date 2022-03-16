@@ -17,7 +17,7 @@ import (
 
 var client = &http.Client{Timeout: time.Second * 180}
 
-type MysqlProvider struct {}
+type MysqlProvider struct{}
 
 func NewAzureMysqlProvider() core.Database {
 	return &MysqlProvider{}
@@ -69,7 +69,6 @@ func (m MysqlProvider) AddAgentIp(firewall *entity.ServerFirewallIpRule, token s
 
 	return nil
 }
-
 
 func (m MysqlProvider) DeleteAgentIp(firewall *entity.ServerFirewallIpRule, token string) (err error) {
 

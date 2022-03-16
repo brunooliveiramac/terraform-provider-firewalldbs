@@ -51,13 +51,12 @@ func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceDa
 	resourceGroup := resource.Get("resource_group_name").(string)
 	serverID := resource.Get("server_id").(string)
 
-
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
-		ServerID: serverID,
+		ServerID:      serverID,
 	}
 
 	provider := service.GetProvider()
@@ -99,13 +98,12 @@ func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData
 	resourceGroup := resource.Get("resource_group_name").(string)
 	serverID := resource.Get("server_id").(string)
 
-
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
-		ServerID: serverID,
+		ServerID:      serverID,
 	}
 
 	provider := service.GetProvider()
@@ -150,7 +148,7 @@ func resourceOpenFirewallUpdate(ctx context.Context, resource *schema.ResourceDa
 		ServerName:    serverName,
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
-		ServerID: serverID,
+		ServerID:      serverID,
 	}
 
 	provider := service.GetProvider()
@@ -197,4 +195,3 @@ func resourceOpenFirewallDelete(ctx context.Context, resource *schema.ResourceDa
 
 	return diagnostics
 }
-

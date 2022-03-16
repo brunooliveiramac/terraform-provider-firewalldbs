@@ -15,7 +15,7 @@ import (
 	"terraform-provider-firewalldbs/firewalldbs/data_provider/model"
 )
 
-type Azure struct {}
+type Azure struct{}
 
 func NewAzureProvider() core.Provider {
 	return &Azure{}

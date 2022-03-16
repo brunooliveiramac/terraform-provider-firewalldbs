@@ -14,7 +14,7 @@ import (
 	"terraform-provider-firewalldbs/firewalldbs/data_provider/model"
 )
 
-type PostgresProvider struct {}
+type PostgresProvider struct{}
 
 func NewAzurePostgresProvider() core.Database {
 	return &PostgresProvider{}
@@ -104,4 +104,3 @@ func (p PostgresProvider) DeleteAgentIp(firewall *entity.ServerFirewallIpRule, t
 	return nil
 
 }
-

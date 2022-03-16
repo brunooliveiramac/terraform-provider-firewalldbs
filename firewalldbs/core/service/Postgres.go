@@ -8,10 +8,10 @@ import (
 
 type Postgres struct {
 	next DatabaseProvider
-	db core.Database
+	db   core.Database
 }
 
-func (postgresInstance *Postgres) AddIp(ipRule *entity.ServerFirewallIpRule, token string)  error {
+func (postgresInstance *Postgres) AddIp(ipRule *entity.ServerFirewallIpRule, token string) error {
 	ids := strings.Split(ipRule.ServerID, "/")
 	if contains(ids, "Microsoft.DBforPostgreSQL") {
 		err := postgresInstance.db.AddAgentIp(ipRule, token)
@@ -19,11 +19,13 @@ func (postgresInstance *Postgres) AddIp(ipRule *entity.ServerFirewallIpRule, tok
 		if err != nil {
 			return err
 		}
+
+		return nil
 	}
 	return postgresInstance.next.AddIp(ipRule, token)
 }
 
-func (postgresInstance *Postgres) RemoveIp(ipRule *entity.ServerFirewallIpRule, token string)  error {
+func (postgresInstance *Postgres) RemoveIp(ipRule *entity.ServerFirewallIpRule, token string) error {
 	ids := strings.Split(ipRule.ServerID, "/")
 	if contains(ids, "Microsoft.DBforPostgreSQL") {
 		err := postgresInstance.db.AddAgentIp(ipRule, token)
@@ -31,10 +33,11 @@ func (postgresInstance *Postgres) RemoveIp(ipRule *entity.ServerFirewallIpRule, 
 		if err != nil {
 			return err
 		}
+
+		return nil
 	}
 	return postgresInstance.next.RemoveIp(ipRule, token)
 }
-
 
 func (postgresInstance *Postgres) SetNext(next DatabaseProvider) {
 	postgresInstance.next = next

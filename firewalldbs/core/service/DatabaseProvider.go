@@ -13,7 +13,7 @@ type DatabaseProvider interface {
 	SetDBProvider(db core.Database)
 }
 
-func GetProvider () DatabaseProvider {
+func GetProvider() DatabaseProvider {
 
 	noProvider := &NoProvider{}
 

@@ -8,12 +8,12 @@ import (
 
 type Mysql struct {
 	next DatabaseProvider
-	db core.Database
+	db   core.Database
 }
 
 func (mysqlInstance *Mysql) AddIp(ipRule *entity.ServerFirewallIpRule, token string) error {
 	ids := strings.Split(ipRule.ServerID, "/")
-	if contains(ids, "Microsoft.DBforMySQL") {
+	if ipRule.ServerID == "" || contains(ids, "Microsoft.DBforMySQL") {
 		err := mysqlInstance.db.AddAgentIp(ipRule, token)
 
 		if err != nil {
@@ -28,8 +28,7 @@ func (mysqlInstance *Mysql) AddIp(ipRule *entity.ServerFirewallIpRule, token str
 
 func (mysqlInstance *Mysql) RemoveIp(ipRule *entity.ServerFirewallIpRule, token string) error {
 	ids := strings.Split(ipRule.ServerID, "/")
-	if contains(ids, "Microsoft.DBforMySQL") {
-
+	if ipRule.ServerID == "" || contains(ids, "Microsoft.DBforMySQL") {
 
 		err := mysqlInstance.db.DeleteAgentIp(ipRule, token)
 

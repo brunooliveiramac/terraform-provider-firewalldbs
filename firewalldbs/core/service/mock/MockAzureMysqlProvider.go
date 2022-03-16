@@ -5,14 +5,14 @@ import (
 	"terraform-provider-firewalldbs/firewalldbs/core/entity"
 )
 
-type MockAzureMysqlProvider struct {
+type MockProvider struct {
 	mock.Mock
 }
 
-func (mock *MockAzureMysqlProvider) AddAgentIp(firewall *entity.ServerFirewallIpRule, token string) (err error) {
+func (mock *MockProvider) AddAgentIp(firewall *entity.ServerFirewallIpRule, token string) (err error) {
 	return nil
 }
 
-func (mock *MockAzureMysqlProvider) DeleteAgentIp(firewall *entity.ServerFirewallIpRule, token string) (err error) {
+func (mock *MockProvider) DeleteAgentIp(firewall *entity.ServerFirewallIpRule, token string) (err error) {
 	return nil
 }
