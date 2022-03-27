@@ -3,7 +3,6 @@ package firewalldbs
 import (
 	"context"
 	"fmt"
-	"github.com/dchest/uniuri"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"terraform-provider-firewalldbs/firewalldbs/core/entity"
@@ -20,7 +19,7 @@ func resourceCloseFirewall() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"server_id": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"server_name": {
 				Type:     schema.TypeString,
@@ -40,8 +39,6 @@ func resourceCloseFirewall() *schema.Resource {
 }
 
 func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
-
-	randomID := uniuri.New()
 
 	var diagnostics diag.Diagnostics
 
@@ -77,30 +74,14 @@ func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceD
 
 	resource.SetId("AgentIP")
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
-
-	if err := resource.Set("agent_ip", ipName); err != nil {
-		return diag.FromErr(err)
-	}
+	resourceCloseFirewallRead(ctx, resource, providerConfig)
 
 	return diagnostics
 }
 
 func resourceCloseFirewallRead(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
 
-	randomID := uniuri.New()
-
 	var diagnostics diag.Diagnostics
-
-	connection := providerConfig.(*model.Connection)
-
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
-
-	if err := resource.Set("agent_ip", ipName); err != nil {
-		return diag.FromErr(err)
-	}
-
-	resource.SetId(ipName)
 
 	return diagnostics
 }
@@ -139,17 +120,9 @@ func resourceCloseFirewallUpdate(ctx context.Context, resource *schema.ResourceD
 		return diagnostics
 	}
 
-	randomID := uniuri.New()
+	resource.SetId("AgentIP")
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
-
-	if err := resource.Set("agent_ip", ipName); err != nil {
-		return diag.FromErr(err)
-	}
-
-	resource.SetId(ipName)
-
-	return diagnostics
+	return resourceCloseFirewallRead(ctx, resource, providerConfig)
 }
 
 func resourceCloseFirewallDelete(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {

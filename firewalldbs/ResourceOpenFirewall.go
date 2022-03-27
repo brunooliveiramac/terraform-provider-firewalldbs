@@ -3,7 +3,6 @@ package firewalldbs
 import (
 	"context"
 	"fmt"
-	"github.com/dchest/uniuri"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"terraform-provider-firewalldbs/firewalldbs/core/entity"
@@ -20,7 +19,7 @@ func resourceOpenFirewall() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"server_id": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"server_name": {
 				Type:     schema.TypeString,
@@ -41,8 +40,6 @@ func resourceOpenFirewall() *schema.Resource {
 
 func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
 
-	randomID := uniuri.New()
-
 	var diagnostics diag.Diagnostics
 
 	connection := providerConfig.(*model.Connection)
@@ -74,22 +71,15 @@ func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceDa
 
 		return diagnostics
 	}
-
 	resource.SetId("AgentIP")
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
-
-	if err := resource.Set("agent_ip", ipName); err != nil {
-		return diag.FromErr(err)
-	}
+	resourceOpenFirewallRead(ctx, resource, providerConfig)
 
 	return diagnostics
 }
 
 func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
 
-	randomID := uniuri.New()
-
 	var diagnostics diag.Diagnostics
 
 	connection := providerConfig.(*model.Connection)
@@ -121,14 +111,6 @@ func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData
 
 		return diagnostics
 	}
-
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
-
-	if err := resource.Set("agent_ip", ipName); err != nil {
-		return diag.FromErr(err)
-	}
-
-	resource.SetId(ipName)
 
 	return diagnostics
 }
@@ -167,17 +149,9 @@ func resourceOpenFirewallUpdate(ctx context.Context, resource *schema.ResourceDa
 		return diagnostics
 	}
 
-	randomID := uniuri.New()
+	resource.SetId("AgentIP")
 
-	ipName := fmt.Sprintf("%s_%s", connection.AgentIP, randomID)
-
-	resource.SetId(ipName)
-
-	if err := resource.Set("agent_ip", ipName); err != nil {
-		return diag.FromErr(err)
-	}
-
-	return diagnostics
+	return resourceOpenFirewallRead(ctx, resource, providerConfig)
 }
 
 func resourceOpenFirewallDelete(ctx context.Context, resource *schema.ResourceData, providerConfig interface{}) diag.Diagnostics {
@@ -195,3 +169,10 @@ func resourceOpenFirewallDelete(ctx context.Context, resource *schema.ResourceDa
 
 	return diagnostics
 }
+
+
+func GetStateName(ip string) string {
+	ipName := fmt.Sprintf("%s","AgentIP")
+	return ipName
+}
+
