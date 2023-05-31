@@ -3,7 +3,7 @@ HOSTNAME=hashicorp.com
 NAMESPACE=brunooliveiramac
 NAME=firewalldbs
 BINARY=terraform-provider-${NAME}
-VERSION=8.0.0
+VERSION=1.0.1
 OS_ARCH=linux_amd64
 GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 
