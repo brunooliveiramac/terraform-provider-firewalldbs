@@ -3,11 +3,12 @@ package firewalldbs
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"terraform-provider-firewalldbs/firewalldbs/core/entity"
 	"terraform-provider-firewalldbs/firewalldbs/core/service"
 	"terraform-provider-firewalldbs/firewalldbs/data_provider/model"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceCloseFirewall() *schema.Resource {
@@ -34,6 +35,11 @@ func resourceCloseFirewall() *schema.Resource {
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("AGENT_IP", ""),
 			},
+			"is_flexible": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -47,6 +53,7 @@ func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceD
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
 	serverId := resource.Get("server_id").(string)
+	isFlexible := resource.Get("is_flexible").(bool)
 
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
@@ -54,6 +61,7 @@ func resourceCloseFirewallCreate(ctx context.Context, resource *schema.ResourceD
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
 		ServerID:      serverId,
+		IsFlexible:    isFlexible,
 	}
 
 	provider := service.GetProvider()
@@ -95,6 +103,7 @@ func resourceCloseFirewallUpdate(ctx context.Context, resource *schema.ResourceD
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
 	serverId := resource.Get("server_id").(string)
+	isFlexible := resource.Get("is_flexible").(bool)
 
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
@@ -102,6 +111,7 @@ func resourceCloseFirewallUpdate(ctx context.Context, resource *schema.ResourceD
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
 		ServerID:      serverId,
+		IsFlexible:    isFlexible,
 	}
 
 	provider := service.GetProvider()

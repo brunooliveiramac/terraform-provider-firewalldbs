@@ -3,11 +3,12 @@ package firewalldbs
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"terraform-provider-firewalldbs/firewalldbs/core/entity"
 	"terraform-provider-firewalldbs/firewalldbs/core/service"
 	"terraform-provider-firewalldbs/firewalldbs/data_provider/model"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceOpenFirewall() *schema.Resource {
@@ -34,6 +35,11 @@ func resourceOpenFirewall() *schema.Resource {
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("AGENT_IP", ""),
 			},
+			"is_flexible": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -47,6 +53,7 @@ func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceDa
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
 	serverID := resource.Get("server_id").(string)
+	isFlexible := resource.Get("is_flexible").(bool)
 
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
@@ -54,6 +61,7 @@ func resourceOpenFirewallCreate(ctx context.Context, resource *schema.ResourceDa
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
 		ServerID:      serverID,
+		IsFlexible:    isFlexible,
 	}
 
 	provider := service.GetProvider()
@@ -87,6 +95,7 @@ func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
 	serverID := resource.Get("server_id").(string)
+	isFlexible := resource.Get("is_flexible").(bool)
 
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
@@ -94,6 +103,7 @@ func resourceOpenFirewallRead(ctx context.Context, resource *schema.ResourceData
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
 		ServerID:      serverID,
+		IsFlexible:    isFlexible,
 	}
 
 	provider := service.GetProvider()
@@ -124,6 +134,7 @@ func resourceOpenFirewallUpdate(ctx context.Context, resource *schema.ResourceDa
 	serverName := resource.Get("server_name").(string)
 	resourceGroup := resource.Get("resource_group_name").(string)
 	serverID := resource.Get("server_id").(string)
+	isFlexible := resource.Get("is_flexible").(bool)
 
 	firewallRule := entity.ServerFirewallIpRule{
 		IP:            connection.AgentIP,
@@ -131,6 +142,7 @@ func resourceOpenFirewallUpdate(ctx context.Context, resource *schema.ResourceDa
 		ResourceGroup: resourceGroup,
 		Subscription:  connection.Subscription,
 		ServerID:      serverID,
+		IsFlexible:    isFlexible,
 	}
 
 	provider := service.GetProvider()
@@ -170,9 +182,7 @@ func resourceOpenFirewallDelete(ctx context.Context, resource *schema.ResourceDa
 	return diagnostics
 }
 
-
 func GetStateName(ip string) string {
-	ipName := fmt.Sprintf("%s","AgentIP")
+	ipName := fmt.Sprintf("%s", "AgentIP")
 	return ipName
 }
-

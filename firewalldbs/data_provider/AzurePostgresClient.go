@@ -9,10 +9,10 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
-	"time"
 	"terraform-provider-firewalldbs/firewalldbs/core"
 	"terraform-provider-firewalldbs/firewalldbs/core/entity"
 	"terraform-provider-firewalldbs/firewalldbs/data_provider/model"
+	"time"
 )
 
 type PostgresProvider struct{}
@@ -32,7 +32,13 @@ func (p PostgresProvider) AddAgentIp(firewall *entity.ServerFirewallIpRule, toke
 
 	jsonValue, _ := json.Marshal(request)
 
-	requestUrl := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBforPostgreSQL/servers/%s/firewallRules/AllowAgent?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName)
+	var requestUrl string
+
+	if firewall.IsFlexible {
+		requestUrl = fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBforPostgreSQL/flexibleServers/%s/firewallRules/AllowAgent?api-version=2022-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName)
+	} else {
+		requestUrl = fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBforPostgreSQL/servers/%s/firewallRules/AllowAgent?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName)
+	}
 
 	req, _ := http.NewRequest("PUT", requestUrl, bytes.NewBuffer(jsonValue))
 
@@ -82,7 +88,13 @@ func (p PostgresProvider) AddAgentIp(firewall *entity.ServerFirewallIpRule, toke
 
 func (p PostgresProvider) DeleteAgentIp(firewall *entity.ServerFirewallIpRule, token string) (err error) {
 
-	requestUrl := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBforPostgreSQL/servers/%s/firewallRules/AllowAgent?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName)
+	var requestUrl string
+
+	if firewall.IsFlexible {
+		requestUrl = fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBforPostgreSQL/flexibleServers/%s/firewallRules/AllowAgent?api-version=2022-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName)
+	} else {
+		requestUrl = fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.DBforPostgreSQL/servers/%s/firewallRules/AllowAgent?api-version=2017-12-01", firewall.Subscription, firewall.ResourceGroup, firewall.ServerName)
+	}
 
 	req, _ := http.NewRequest("DELETE", requestUrl, nil)
 

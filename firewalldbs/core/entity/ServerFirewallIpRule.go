@@ -6,4 +6,5 @@ type ServerFirewallIpRule struct {
 	ServerName    string `json:"server"`
 	ResourceGroup string `json:"resource_group"`
 	Subscription  string `json:"subscription"`
+	IsFlexible    bool   `json:"is_flexible"`
 }
