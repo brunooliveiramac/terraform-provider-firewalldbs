@@ -20,14 +20,14 @@ provider "firewalldbs" {
 }
 
 resource "firewalldbs_open" "default" {
-  server_name         = "brunoxy-ix4-north-eu-sandbox"
-  resource_group_name = "bees-eu-sbx-brunoxy"
+  server_name         = "batata-6fu-sbx"
+  resource_group_name = "batata-sbx-brunoxyy
   agent_ip            = "192.168.1.1"
 }
 
 resource "firewalldbs_close" "default" {
-  server_name         = "brunoxy-ix4-north-eu-sandbox"
-  resource_group_name = "bees-eu-sbx-brunoxy"
+  server_name         = "batata-6fu-sbx"
+  resource_group_name = "batata-sbx-brunoxyy"
   agent_ip            = "192.168.1.1"
 
   depends_on = [

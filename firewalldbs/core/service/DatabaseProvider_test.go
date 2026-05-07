@@ -15,7 +15,7 @@ func TestShouldApplyMySqlProviderWhenIdContainsMySql(t *testing.T) {
 	mockProvider.On("DeleteAgentIp").Return(nil)
 
 	serverInfo := entity.ServerFirewallIpRule{
-		ServerID:      "/subscriptions/5c92b4a1-d813-42e0-804d-0c0e64218b27/resourceGroups/bees-eu-sbx-brunoxyy/providers/Microsoft.DBforMySQL/servers/brunoxyy-6fu-north-eu-sandbox",
+		ServerID:      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/batata-sbx-brunoxyy/providers/Microsoft.DBforMySQL/servers/batata-6fu-sbx",
 		IP:            "192.168.0.1",
 		ServerName:    "some-server",
 		ResourceGroup: "some-resource-group",
@@ -47,7 +47,7 @@ func TestShouldApplyPostgresProviderWhenIdContainsPostgres(t *testing.T) {
 	mockProvider.On("DeleteAgentIp").Return(nil)
 
 	serverInfo := entity.ServerFirewallIpRule{
-		ServerID:      "/subscriptions/5c92b4a1-d813-42e0-804d-0c0e64218b27/resourceGroups/bees-eu-sbx-brunoxyy/providers/Microsoft.DBforPostgreSQL/servers/brunoxyy-6fu-north-eu-sandbox",
+		ServerID:      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bees-eu-sbx-brunoxyy/providers/Microsoft.DBforPostgreSQL/servers/batata-6fu-sbx",
 		IP:            "192.168.0.1",
 		ServerName:    "some-server",
 		ResourceGroup: "some-resource-group",
